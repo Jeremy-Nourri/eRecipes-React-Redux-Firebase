@@ -16,7 +16,9 @@ const recipesSlice = createSlice({
         },
         setRecipes: (state, action) => {
             state.recipes = action.payload;
-        },
-        
+        }
+    }        
 
 })
+
+export default recipesSlice;

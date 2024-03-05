@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { forwardRef } from 'react';
 
 const Input = forwardRef(function Input(props, ref) {
-  const { label, type, placeholder, isRequired, defaultValue } = props;
+  const { label, type, placeholder, name, isRequired, defaultValue } = props;
   return (
     <label className="mt-2 flex flex-col justify-center items-center text-sm lg:text-md">
       {label}
@@ -10,7 +10,8 @@ const Input = forwardRef(function Input(props, ref) {
       <input         
         type={type}
         ref={ref}
-        defaultValue={defaultValue}   
+        defaultValue={defaultValue} 
+        name={name}  
         placeholder={placeholder}
         required={isRequired}
         className="my-1 mx-auto block max-w-[300px] box-border py-1 px-2 border border-gray-300 rounded-md text-sm placeholder:text-xs lg:text-md lg:placeholder:text-md"
@@ -24,7 +25,8 @@ Input.propTypes = {
     type: PropTypes.string,
     placeholder: PropTypes.string,
     isRequired: PropTypes.bool,
-    defaultValue: PropTypes.string
+    defaultValue: PropTypes.string,
+    name: PropTypes.string
 }
 
 export default Input

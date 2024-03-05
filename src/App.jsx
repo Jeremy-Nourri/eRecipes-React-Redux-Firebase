@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import recipehomepage from "./assets/recipe-homepage.jpg"
 import SignForm from './components/auth/SignForm';
-import Recipe from './components/recipes/Recipe';
+import Recipes from './components/recipes/Recipes';
 
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
     <>
       {
         user ?
-              <Recipe />
+              <Recipes />
         :
           <main>
             <img className="max-h-screen inline-block" src={recipehomepage} alt="plat" />

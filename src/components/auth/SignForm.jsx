@@ -26,7 +26,6 @@ const SignForm = () => {
     }
 
     axios.post(URL, credentials).then((response) => {
-      console.log(response.data);
       localStorage.setItem("token", response.data.idToken);
       dispatch(setUser(response.data));
     })

@@ -9,6 +9,7 @@ import Input from "../ui/Input";
 
 const SignForm = () => {
   const authMode = useSelector(state => state.auth.authMode);
+  
   const dispatch = useDispatch();
 
   const emailRef = useRef();
@@ -32,9 +33,9 @@ const SignForm = () => {
   }
 
   return ( 
-    <div className="inline-block text-center max-w-sm min-w-2/6 mx-auto">
-      <p className="mb-8 font-semibold text-lg">Bienvenue sur l'application de recette</p>
-      <form className="mx-auto mb-8" onSubmit={submitForm}>
+    <div className="flex-grow flex flex-col items-center justify-center">
+      <p className="mb-8 font-semibold text-lg text-black">Bienvenue sur l'application de recette</p>
+      <form className="mx-auto mb-8 text-black" onSubmit={submitForm}>
         <Input 
             label="Email" 
             type="email" 
@@ -51,7 +52,7 @@ const SignForm = () => {
             ref={passwordRef} 
             defaultValue={""}
         />
-        <button>{authMode}</button>
+        <button className="btn block mx-auto mt-3 min-w-[180px] max-w-[300px] box-border h-1 px-2">{authMode}</button>
       </form>
       <button className="block mx-auto" onClick={() => dispatch(setAuthMode(authMode === "Se connecter" ? "S'inscrire" : "Se connecter"))}>
         {authMode === "Se connecter" ? "S'inscrire" : "Se connecter"}

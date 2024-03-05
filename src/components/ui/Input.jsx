@@ -14,7 +14,8 @@ const Input = forwardRef(function Input(props, ref) {
         name={name}  
         placeholder={placeholder}
         required={isRequired}
-        className="my-1 mx-auto block max-w-[300px] box-border py-1 px-2 border border-gray-300 rounded-md text-sm placeholder:text-xs lg:text-md lg:placeholder:text-md"
+        className="my-1 mx-auto block min-w-[180px] max-w-[300px] box-border py-1 px-2 border border-gray-300
+         rounded-md text-sm leading-normal placeholder:text-xs lg:text-md lg:placeholder:text-md"
         />
     </label>
   );

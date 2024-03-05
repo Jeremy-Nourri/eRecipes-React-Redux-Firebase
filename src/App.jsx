@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import recipehomepage from "./assets/recipe-homepage.jpg"
 import SignForm from './components/auth/SignForm';
 import Recipes from './components/recipes/Recipes';
 
@@ -13,8 +12,9 @@ function App() {
         user ?
               <Recipes />
         :
-          <main>
-            <img className="max-h-screen inline-block" src={recipehomepage} alt="plat" />
+          <main className="flex w-full h-[100vh]">
+            <div className="grid flex-grow bg-[url('./assets/recipe-homepage.jpg')] bg-cover">
+            </div>
             <SignForm />
           </main>
       }

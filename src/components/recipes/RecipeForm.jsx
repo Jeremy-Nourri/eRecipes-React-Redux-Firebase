@@ -1,32 +1,27 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
+
 import axios from "axios";
 
 import { BASE_DB_URL } from "../../firebaseConfig";
-import { addRecipe } from "./recipesSlice";
+import { addRecipe, updateRecipe } from "./recipesSlice";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 
-import { ingredients } from "../../data/data";
+import { ingredientsData } from "../../data/data";
 
 function RecipeForm() {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.auth.user);
-  const recipes = useSelector((state) => state.recipes.recipes);
-
-  const { id } = useParams();
-
-  const recipeFound = id ? recipes.find((recipe) => recipe.id == id) : null;
+  const recipeFound = useSelector((state) => state.recipes.selectedRecipe);
 
   const inputTitle = useRef();
   const inputInstructions = useRef();
   const inputCookTime = useRef();
   const inputPrepTime = useRef();
 
-  const [ingredientsChecked, setIngredientsChecked] = useState([]);
+  const [ingredientsChecked, setIngredientsChecked] = useState(recipeFound?.ingredients ?? []);
 
   const handleCheckBoxes = (e, ingredientId) => {
     if (e.target.checked) {
@@ -46,20 +41,26 @@ function RecipeForm() {
       prepTime: inputPrepTime.current.value,
       ingredients: ingredientsChecked,
     };
-    if (user.idToken) {
-      axios
-        .post(`${BASE_DB_URL}recipes.json?auth=${user.idToken}`, newRecipe)
-        .then((response) => {
-          console.log(response.data);
-          dispatch(addRecipe(newRecipe));
-        });
-    }
+
+    if (recipeFound) {
+        axios
+            .put(`${BASE_DB_URL}recipes/${recipeFound.id}.json?auth=${user.idToken}`, newRecipe)
+            .then(() => {
+                dispatch(updateRecipe({ id: recipeFound.id, ...newRecipe }));
+            });
+        } else {
+            axios
+            .post(`${BASE_DB_URL}recipes.json?auth=${user.idToken}`, newRecipe)
+            .then((response) => {
+                dispatch(addRecipe({ id: response.data.name, ...newRecipe }));
+            });
+        }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="text-sm text-center">
-      <h2 className="text-lg font-bold text-blue-700 mb-4">
-        {id ? "Modifier" : "Ajouter"} une recette
+    <form onSubmit={handleSubmit} className="flex flex-col justify-center text-sm text-center">
+      <h2 className="text-lg font-bold text-[#00635D] mb-4">
+        {recipeFound ? "Modifier" : "Ajouter"} une recette
       </h2>
       <Input
         label="Titre"
@@ -86,34 +87,58 @@ function RecipeForm() {
         defaultValue={recipeFound?.prepTime ?? ""}
       />
 
-      {ingredients.map((ingredient) => (
-        <label key={ingredient.id} className="flex items-center">
-          {ingredient.name}
-          <input
-            type="checkbox"
-            value={ingredient.name}
-            onChange={(e) => handleCheckBoxes(e, ingredient.id)}
-          />
-        </label>
-      ))}
+      {
+        recipeFound ? (
+            <div className="my-4 w-full flex justify-evenly">
+                {ingredientsData.map((ingredient) => (
+                <label key={ingredient.id} className="flex items-center justify-center">
+                    <input
+                    type="checkbox"
+                    value={ingredient.name}
+                    onChange={(e) => handleCheckBoxes(e, ingredient.id)}
+                    checked={ingredientsChecked.some((ing) => ing.id === ingredient.id)}
+                    className="mr-2"
+                    />
+                    {ingredient.name}
+                </label>
+                ))}
+            </div>
+            ) : (
+            <div className="my-4 w-full flex justify-evenly">
+                {ingredientsData.map((ingredient) => (
+                <label key={ingredient.id} className="flex items-center justify-center">
+                    <input
+                    type="checkbox"
+                    value={ingredient.name}
+                    onChange={(e) => handleCheckBoxes(e, ingredient.id)}
+                    className="mr-2"
+                    />
+                    {ingredient.name}
+                </label>
+                ))}
+            </div>
+            )
+        }
 
       <label className="mt-2 flex flex-col justify-center items-center text-sm lg:text-md">
         Instructions
         <textarea
           name="instructions"
-          cols="30"
+          cols="60"
           rows="10"
           ref={inputInstructions}
           defaultValue={recipeFound?.instructions ?? ""}
-        ></textarea>
+          className="border border-gray-300 rounded-md p-2"
+        />
       </label>
 
       <Button
-        text="Ajouter"
+        text={recipeFound ? "Modifier" : "Ajouter"}
         type="submit"
-        background="bg-blue-700"
+        background="bg-[#00635D]"
         textColor="text-white"
       />
+
     </form>
   );
 }
